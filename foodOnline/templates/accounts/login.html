@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Main Section Start -->
+<div class="main-section">
+    <div class="page-section nopadding cs-nomargin" style="margin-top: 0px; padding-top: 60px; padding-bottom: 30px; margin-bottom: 0px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="signup-form login-form">
+                        <div class="tab-content">
+                            <div id="login_box">
+                                <div class="scetion-title">
+                                    <h2>User Login</h2>
+                                </div>
+                                <hr>
+                                <form action="{% url 'login' %}"  class="form-fields-set foodbakery-dev-restaurant-form" method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                            <div class="field-holder">
+                                                <input type="email"  name="email" placeholder="Enter Your Email Address">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                            <div class="field-holder">
+                                                <input type="password" name="password" placeholder="Enter Password">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                                            <div class="shortcode-ajax-login-button input-button-loader">
+                                                <input type="submit" class="cs-bgcolor user-submit backcolr acc-submit" id="user-submit" value="Log in">
+                                            </div>
+                                            <a href="#forgot_box" data-toggle="tab" class="user-forgot-password-page ml-2"> Forgot Password?</a>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 ">
+                                            <div class="login-section">
+                                                <i class="icon-user-add "></i>New Here?
+                                                <!-- <a class="cs-color cs-popup-joinus-btn login-popup ml-0" href="{% url 'registerUser' %}">Signup</a> -->
+                                                <a class="ml-2" href="{% url 'registerUser' %}" >Signup</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Section End -->
+
+{% endblock %}

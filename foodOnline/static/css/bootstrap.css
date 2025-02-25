@@ -4161,9 +4161,9 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
     border-bottom-color: #ffffff;
   }
 }
-.tab-content > .tab-pane {
+/* .tab-content > .tab-pane {
   display: none;
-}
+} */
 .tab-content > .active {
   display: block;
 }
