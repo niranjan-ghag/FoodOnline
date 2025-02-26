@@ -133,3 +133,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 from django.contrib.messages import constants as mesaages
 MESSAGE_TAGS= { mesaages.ERROR: 'danger',}
+
+
+# Email configuration
+EMAIL_HOST = 'smtp.gmail.com' 
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'niranjanghag.aws@gmail.com'
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL= 'FoodOnline <niranjanghag.aws@gmail.com>'
+# DEFAULT_FROM_EMAIL= EMAIL_HOST_USER
