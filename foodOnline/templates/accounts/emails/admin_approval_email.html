@@ -1,0 +1,10 @@
+{% autoescape off  %}
+
+Hi {{user.first_name}} {{user.last_name}}
+{% if is_approved%}
+Congratulations! Your Resturant has been approved by our Admin Team. --foodOnline
+{% else %}
+We are Sorry! You are not eligible for publishing your Resturant on OnlineFoood. For more details, Please contact support@foodonline.com
+{% endif %}
+
+{% endautoescape  %}
