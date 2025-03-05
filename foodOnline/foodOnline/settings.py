@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "foodOnlineApp",
     "accounts",
     "vendor",
+    "menu"
 ]
 
 MIDDLEWARE = [
@@ -69,7 +70,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "foodOnline.context_processors.get_vendor"
+                "foodOnline.context_processors.get_vendor",
+                "foodOnline.context_processors.get_google_api"
             ],
         },
     },
@@ -144,3 +146,7 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL= 'FoodOnline <niranjanghag.aws@gmail.com>'
 # DEFAULT_FROM_EMAIL= EMAIL_HOST_USER
+
+GOOGLE_API_KEY = 'AIzaSyAqMUjdqweeK5A5zfSzxb9_YA95XmIbeUo'
+# GOOGLE_API_KEY = 'AIzaSyBkp7d0QAv0AAXmjYe2BSCGcKfA99bb1JQ'
+# Google Maps Platform: AIzaSyBkp7d0QAv0AAXmjYe2BSCGcKfA99bb1JQ
