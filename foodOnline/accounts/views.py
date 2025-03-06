@@ -93,15 +93,23 @@ def registerVendor(request):
             send_verification_email(request, user, email_subject, email_template)
             messages.success(request,'Your account has been registered Successfully! Please wait for the verification.')
 
-            return redirect('registerVendor')
+            return redirect('login')
+        else:
+            print("user_form-----",list(user_form.errors.values()))
+            print("vendor_form-----",list(vendor_form.errors.values()))
     else:
         # get request
         user_form= UserForm()
         vendor_form = VendorForm()
+    
+    # print("---user_form----",user_form)
+    # print("---vendor_form----",vendor_form)
+
     context = {
         'user_form':user_form,
-        'vendor_form' : vendor_form
+        'vendor_form' : vendor_form,
     }
+    print("-----context-----",context)
     return render(request, 'accounts/registerVendor.html',context)
 
 
