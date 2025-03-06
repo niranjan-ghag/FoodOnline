@@ -31,4 +31,3 @@ class Vendor(models.Model):
                     mail_subject="We are Sorry! You are not eligible for publishing your Resturant on OnlineFoood!"
                     send_notification(mail_subject, mail_template, context)
         return super(Vendor, self).save(*args, **kwargs)
-

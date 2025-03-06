@@ -31,7 +31,11 @@
                                                                 <li class="gal-img">
                                                                     <div class="drag-list">
                                                                         <div class="item-thumb">
-                                                                            <img src="{{user_profile.profile_picture.url}}" alt="Logo" class="thumbnail">
+                                                                            {% if user_profile.profile_picture %}
+                                                                                <img src="{{user_profile.profile_picture.url}}" alt="Logo" class="thumbnail">
+                                                                            {% else %}
+                                                                                <img src="{% static 'images/profile_image.jpg' %}" alt="">
+                                                                            {% endif %}
                                                                         </div>
                                                                     </div>
                                                                 </li>
@@ -53,7 +57,11 @@
                                                                 <li class="gal-img">
                                                                     <div class="drag-list">
                                                                         <div class="item-thumb">
-                                                                            <img src="{{user_profile.cover_photo.url}}" alt="Cover Photo" class="thumbnail">
+                                                                            {% if uuser_profile.cover_photo %}
+                                                                                <img src="{{user_profile.cover_photo.url}}" alt="Cover Photo" class="thumbnail">
+                                                                            {% else %}
+                                                                                <img src="{% static 'images/cover_photo.jpg' %}" alt="">
+                                                                            {% endif %}
                                                                         </div>
                                                                     </div>
                                                                 </li>

@@ -147,6 +147,6 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL= 'FoodOnline <niranjanghag.aws@gmail.com>'
 # DEFAULT_FROM_EMAIL= EMAIL_HOST_USER
 
-GOOGLE_API_KEY = 'AIzaSyAqMUjdqweeK5A5zfSzxb9_YA95XmIbeUo'
+GOOGLE_API_KEY = 'AIzaSyD2Yu16bqX7XEp924iFnrtxSYh3zmw8g5k'
 # GOOGLE_API_KEY = 'AIzaSyBkp7d0QAv0AAXmjYe2BSCGcKfA99bb1JQ'
 # Google Maps Platform: AIzaSyBkp7d0QAv0AAXmjYe2BSCGcKfA99bb1JQ
