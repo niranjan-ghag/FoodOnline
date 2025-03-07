@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     "foodOnlineApp",
     "accounts",
     "vendor",
-    "menu"
+    "menu",
+    "marketplace"
 ]
 
 MIDDLEWARE = [
