@@ -72,7 +72,9 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "foodOnline.context_processors.get_vendor",
-                "foodOnline.context_processors.get_google_api"
+                "foodOnline.context_processors.get_google_api",
+                "foodOnline.context_processors.get_cart_counter",
+                "foodOnline.context_processors.get_cart_amount"
             ],
         },
     },
