@@ -6,6 +6,7 @@ from menu.models import Category, FoodItem
 from vendor.models import Vendor
 from django.db.models import Prefetch
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 # Create your views here.
 from django.utils.decorators import decorator_from_middleware
 from django.middleware.cache import CacheMiddleware
@@ -104,3 +105,18 @@ def delete_cart(request,cart_id):
             return JsonResponse({'status':'Failed','message': 'Invalid Request!'})
     else:
         return JsonResponse({'status':'login_required','message': 'Please Login'})
+    
+
+def search(request):
+    address = request.GET['address']
+    keyword = request.GET['keyword']
+
+    fetch_vendor_by_fooditems = FoodItem.objects.filter(food_title__icontains=keyword, is_available =True).values_list('vendor', flat=True)
+    # print(fetch_vendor_by_fooditems)
+
+    vendors = Vendor.objects.filter(Q(id__in=fetch_vendor_by_fooditems) | Q(vendor_name__icontains=keyword, is_approved=True, user__is_active= True))
+    # vendors = Vendor.objects.filter(vendor_name__icontains=keyword, is_approved=True, user__is_active= True)
+    vendor_count = vendors.count()
+    
+    context = {'vendors':vendors, 'vendor_count':vendor_count}
+    return render(request, 'marketplace/listings.html',context)
