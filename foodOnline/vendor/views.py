@@ -1,15 +1,21 @@
+from django.db import IntegrityError
 from django.shortcuts import render, get_object_or_404, redirect
 from menu.forms import CategoryForm, FoodItemForm
 from menu.models import Category, FoodItem
-from vendor.forms import VendorForm
+from vendor.forms import OpeningHourForm, VendorForm
 from accounts.forms import UserProfileForm
 from accounts.models import UserProfile
-from vendor.models import Vendor
+from vendor.models import OpeningHour, Vendor
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from accounts.views import check_role_vendor
 from django.template.defaultfilters import slugify
+from django.http import HttpResponse, JsonResponse
 # Create your views here.
+
+def get_vendor(request):
+    vendor = Vendor.objects.get(user=request.user)
+    return vendor
 
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
@@ -55,9 +61,7 @@ def fooditems_by_category(request, pk=None):
     context = {'fooditems':fooditems, 'category':category}
     return render(request,'vendor/fooditems_by_category.html', context)
 
-def get_vendor(request):
-    vendor = Vendor.objects.get(user=request.user)
-    return vendor
+
 
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
@@ -68,7 +72,10 @@ def add_category(request):
             category_name = form.cleaned_data['category_name']
             category = form.save(commit=False)
             category.vendor = get_vendor(request)
-            category.slug = slugify(category_name)
+
+            category.save() #here the category id will be generated
+            category.slug = slugify(category_name)+'-'+str(category.id)
+            category.save()
             form.save()
             messages.success(request, 'Category Added Successfully')
             return redirect('menu_builder')
@@ -151,3 +158,46 @@ def delete_fooditem(request,pk=None):
     food_item.delete()
     messages.success(request, 'Food Item has been Deleted Successfully')
     return redirect('fooditems_by_category', food_item.category.id)
+
+
+
+def opening_hours(request):
+    opening_hours = OpeningHour.objects.filter(vendor=get_vendor(request))
+    form = OpeningHourForm()
+    context = {'form': form, 'opening_hours' : opening_hours}
+    return render(request,'vendor/opening_hours.html', context)
+
+
+def add_opening_hours(request):
+    if request.user.is_authenticated:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == 'POST':
+            days = request.POST.get('days')
+            from_hours = request.POST.get('from_hours')
+            to_hours = request.POST.get('to_hours')
+            is_closed = request.POST.get('is_closed')
+            
+            try:
+                hour = OpeningHour.objects.create(vendor=get_vendor(request), days= days, from_hours=from_hours, to_hours=to_hours,is_closed=is_closed)
+                if hour:
+                    day = OpeningHour.objects.get(id=hour.id)
+                    if day.is_closed:
+                        response = {'status': 'success', 'id':hour.id,'day':day.get_days_display(), 'is_closed': 'Closed'}
+                    else:
+                        response = {'status': 'success', 'id':hour.id,'day':day.get_days_display(), 'from_hours': hour.from_hours,'to_hours': hour.to_hours}
+                
+                return JsonResponse(response)
+            except IntegrityError as e:
+                response = {'status': 'failed', 'message': f'{from_hours} - {to_hours} already exists!'}
+                return JsonResponse(response)
+        else:
+            return HttpResponse('Invalid Request')
+
+    return HttpResponse('Added')
+
+
+def remove_opening_hours(request, pk):
+    if request.user.is_authenticated:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            hour = get_object_or_404(OpeningHour, pk=pk)
+            hour.delete()
+            return JsonResponse({'status': 'success', 'id':pk})
