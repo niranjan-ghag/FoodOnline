@@ -37,7 +37,7 @@ $(document).ready(function(){
             url: url,
             success: function(response){
                 if (response.status =='login_required'){
-                    console.log(response);
+                    // console.log(response);
                     swal(response.message,'','info').then(function(){
                         window.location = '/account/login';
                     })
@@ -45,7 +45,7 @@ $(document).ready(function(){
                     swal(response.message,'','error')
                 }
                 else{
-                    console.log("---",response)
+                    // console.log("---",response)
                     $('#cart_counter').html(response.cart_counter['cart_count']);
                     $('#qty-'+food_id).html(response.qty);
 
@@ -124,7 +124,7 @@ $(document).ready(function(){
             type: 'GET',
             url: url,
             success: function(response){
-                console.log(response)
+                // console.log(response)
                 if (response.status =='Failed'){
                     // $('#cart_counter').html(response.cart_counter['cart_count']);
                     // $('#qty-'+food_id).html(response.qty);
@@ -173,4 +173,93 @@ $(document).ready(function(){
         
     }
 
+    // Add tabular structure
+    $('.add_hour').on('click', function(e){
+        e.preventDefault();
+        var day = document.getElementById('id_days').value
+        var from_hours = document.getElementById('id_from_hours').value
+        var to_hours = document.getElementById('id_to_hours').value
+        var is_closed = document.getElementById('id_is_closed').checked
+        var csrf_token = $('input[name=csrfmiddlewaretoken]').val()
+        var url = document.getElementById('add_hour_url').value
+        console.log(from_hours)
+
+        if (is_closed){
+            is_closed = 'True'
+            condition = "day !=''"
+        }
+        else{
+            is_closed = 'False'
+            condition = "day != '' && from_hours !='' && to_hours != '' "
+        }
+        if (eval(condition)){
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'days': day,
+                    'from_hours':from_hours,
+                    'to_hours':to_hours,
+                    'is_closed':is_closed,
+                    'csrfmiddlewaretoken': csrf_token
+                },
+                success: function(response){
+                    // console.log(response)
+                    if (response.status =='success'){
+                        if (response.is_closed == 'Closed'){
+                            html = '<tr id="hour-'+response.id+'"><td><b>'+response.day+'</b></td><td>Closed</td><td><a href="" class="remove_hour" data-url="/vendor/opening_hours/remove/'+response.id+'">Remove</a></td></tr>'
+                        }
+                        else{
+                            html = '<tr id="hour-'+response.id+'"><td><b>'+response.day+'</b></td><td>'+response.from_hours+' - '+ response.to_hours+'</td><td><a href="" class="remove_hour" data-url="/vendor/opening_hours/remove/'+response.id+'">Remove</a></td></tr>'
+                        }
+                        
+                        $(".opening_hours").append(html)
+                        document.getElementById("opening_hours").reset();
+                    }
+                    else{
+                        console.log(response.message)
+                        swal(response.message,'','error')
+                    }
+                }
+            })
+        }
+        else{
+            swal('Please fill all the fields!','','info')
+        }
+
+    })
+
+    // Remove hours
+    // $('.remove_hour').on('click', function(e){
+    //     e.preventDefault();
+    //     url = $(this).attr('data-url');
+        
+    //     $.ajax({
+    //         type: 'GET',
+    //         url: url,
+    //         success: function(response){
+    //             if(response.status == 'success'){
+    //                 document.getElementById('hour-'+response.id).remove()
+    //             }
+    //         }
+    //     })
+
+    // })
+
+    $(document).on('click','.remove_hour', function(e){
+        e.preventDefault();
+        url = $(this).attr('data-url');
+        
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function(response){
+                if(response.status == 'success'){
+                    document.getElementById('hour-'+response.id).remove()
+                }
+            }
+        })
+    })
+
+    // document ready close
 })
