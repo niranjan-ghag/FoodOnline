@@ -24,26 +24,27 @@ class Vendor(models.Model):
         today = today_date.isoweekday()
 
         current_opening_hours = OpeningHour.objects.filter(vendor=self, days=today)
-        # now = datetime.now()
-        # current_time = now.strftime("%H:%M:%S")
-        current_time = datetime.now().time()
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        # current_time = datetime.now().time()
 
         is_open = None
         for i in current_opening_hours:
-            # start = str(datetime.strptime(i.from_hours,'%I:%M %p').time())
-            # end = str(datetime.strptime(i.to_hours,'%I:%M %p').time())
-            # if current_time > start and current_time < end:
-            #     is_open = True
-            #     break
-            # else:
-            #     is_open =False
-            start = datetime.strptime(i.from_hours,'%I:%M %p').time()
-            end = datetime.strptime(i.to_hours,'%I:%M %p').time()
-            if start >= current_time and end <= current_time:
-                is_open = True
-                break
-            else:
-                is_open =False
+            if not i.is_closed:
+                start = str(datetime.strptime(i.from_hours,'%I:%M %p').time())
+                end = str(datetime.strptime(i.to_hours,'%I:%M %p').time())
+                if current_time > start and current_time < end:
+                    is_open = True
+                    break
+                else:
+                    is_open =False
+                # start = datetime.strptime(i.from_hours,'%I:%M %p').time()
+                # end = datetime.strptime(i.to_hours,'%I:%M %p').time()
+                # if start >= current_time and end <= current_time:
+                #     is_open = True
+                #     break
+                # else:
+                #     is_open =False
 
         return is_open
     
