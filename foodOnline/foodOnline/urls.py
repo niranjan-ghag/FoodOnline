@@ -19,7 +19,7 @@ from django.urls import path, include
 from foodOnlineApp import views
 from django.conf import settings
 from django.conf.urls.static import static
-from marketplace.views import cart
+from marketplace.views import cart, search
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.home, name='home'),
@@ -30,6 +30,9 @@ urlpatterns = [
 
     # Cart
     path('cart/',cart, name='cart'),
+
+    # Search
+    path('search/', search, name='search')
 
 
 
