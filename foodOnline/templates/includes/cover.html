@@ -22,9 +22,9 @@
                         <div class="text-holder">
                             <span class="restaurant-title">{{vendor.vendor_name}}</span>
                             <div class="text">
-                                {% if vendor.user_profile.address_line %}
+                                {% if vendor.user_profile.address %}
                                 <i class="fa fa-map-marker"></i>
-                                <p>{{vendor.user_profile.address_line }}</p>
+                                <p>{{vendor.user_profile.address }}</p>
                                 {% endif %}
                             </div>
                         </div>
