@@ -92,7 +92,26 @@
 </div>
 <!-- Main Section End -->
 <script>
+    // Function to get CSRF token from cookies
+    function getCSRFTokenFromCookie() {
+        let cookieValue = null;
+        let cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            let [name, value] = cookie.trim().split('=');
+            if (name === 'csrftoken') {
+                cookieValue = value;
+                break;
+            }
+        }
+        return cookieValue;
+    }
+
     // RazorPay Payment Gateway
+    const csrftoken= getCSRFTokenFromCookie(); 
+    var url = "{% url 'payments' %}"
+    var order_number = "{{ order.order_number}}"
+    var order_complete = "{% url 'order_complete' %}"
+
     var options = {
         "key": "{{ RZP_KEY_ID }}", // Enter the Key ID generated from the Dashboard
         "amount": "{{rzp_amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -139,6 +158,25 @@
     document.getElementById('rzp-button1').onclick = function(e){
         rzp1.open();
         e.preventDefault();
+    }
+
+    // Send Data to payments view to store in database.
+    function sendTransaction(transaction_id, payment_method, status){
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                'order_number': order_number,
+                'transaction_id': transaction_id,
+                'payment_method': payment_method,
+                'status': status,
+                'csrfmiddlewaretoken': csrftoken
+            },
+            success: function(response){
+                console.log('response---', response)
+                window.location.href = order_complete + '?order_no='+response.order_number+'&trans_id='+response.transaction_id
+            }
+        })
     }
 </script>
 
