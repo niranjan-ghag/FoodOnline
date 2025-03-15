@@ -19,7 +19,7 @@ from django.urls import path, include
 from foodOnlineApp import views
 from django.conf import settings
 from django.conf.urls.static import static
-from marketplace.views import cart, search
+from marketplace.views import cart, search, checkout
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -36,7 +36,13 @@ urlpatterns = [
     path('search/', search, name='search'),
 
     # Cutomer
-    path('customer/',include('customers.urls'))
+    path('customer/',include('customers.urls')),
+
+    # CHECKOUT
+    path('checkout/', checkout, name='checkout'),
+
+    # ORDERS
+    path('orders/', include('orders.urls'),)
 
 
 
