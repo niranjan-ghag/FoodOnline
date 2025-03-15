@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     "accounts",
     "vendor",
     "menu",
-    "marketplace"
+    "marketplace",
+    "customers",
+    "orders",
 ]
 
 MIDDLEWARE = [
@@ -153,3 +155,6 @@ DEFAULT_FROM_EMAIL= 'FoodOnline <niranjanghag.aws@gmail.com>'
 GOOGLE_API_KEY = 'AIzaSyD2Yu16bqX7XEp924iFnrtxSYh3zmw8g5k'
 # GOOGLE_API_KEY = 'AIzaSyBkp7d0QAv0AAXmjYe2BSCGcKfA99bb1JQ'
 # Google Maps Platform: AIzaSyBkp7d0QAv0AAXmjYe2BSCGcKfA99bb1JQ
+
+RZP_KEY_ID = config('RZP_KEY_ID')
+RZP_KEY_SECRET = config('RZP_KEY_SECRET')

@@ -21,8 +21,8 @@ class UserForm(forms.ModelForm):
 
 class UserProfileForm(forms.ModelForm):
     # profile_picture = forms.ImageField(widget=forms.FileInput(attrs={'class':'btn btn-info'})) #Validators don't work image field
-    profile_picture = forms.FileField(widget=forms.FileInput(attrs={'class':'btn btn-info'}), validators=[allow_only_images_validator])
-    cover_photo = forms.FileField(widget=forms.FileInput(attrs={'class': 'btn btn-info'}), validators=[allow_only_images_validator])
+    profile_picture = forms.FileField(widget=forms.FileInput(attrs={'class':'btn btn-info'}), validators=[allow_only_images_validator], required=False)
+    cover_photo = forms.FileField(widget=forms.FileInput(attrs={'class': 'btn btn-info'}), validators=[allow_only_images_validator], required=False)
     address = forms.CharField(widget=forms.TextInput(attrs={'required':'required'}))
 
     # 1st to make Readonly Field
@@ -38,3 +38,9 @@ class UserProfileForm(forms.ModelForm):
         for field in self.fields:
             if field =='latitude' or field =='longitude':
                 self.fields[field].widget.attrs['readonly']='readonly'
+
+
+class UserInfoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','phone_number']
