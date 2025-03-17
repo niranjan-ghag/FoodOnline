@@ -45,7 +45,8 @@
                                 <td><img src="{{ item.fooditem.image.url}}" width="60" alt="FoodImage"></td>
                                 <td>
                                     <p class="mb-0"><b>{{ item.fooditem}}</b></p>
-                                    <a class="text-muted" href="{% url 'vendor_detail' item.fooditem.vendor.vendor_slug' % }">{{ item.fooditem.vendor.vendor_name}}</a>
+                                    
+                                    <a class="badge badge-warning" href="{% url 'vendor_detail' item.fooditem.vendor.vendor_slug %}">{{ item.fooditem.vendor.vendor_name}}</a>
                                 </td>
                                 <td>{{ item.quantity }} qty</td>
                                 <td>₹ {{ item.fooditem.price }}</td>

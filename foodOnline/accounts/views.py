@@ -4,6 +4,7 @@ from accounts.forms import UserForm
 from accounts.models import User, UserProfile
 from django.contrib import messages, auth
 
+from orders.models import Order
 from vendor.forms import VendorForm
 from accounts.utils import detectUser, send_verification_email
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -150,7 +151,11 @@ def myAccount(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_customer)
 def custdashboard(request):
-    return render(request, 'accounts/custdashboard.html')
+    orders = Order.objects.filter(user=request.user, is_ordered=True)
+    recent_orders = orders[:5]
+    
+    context = {'orders': orders,'orders_count': orders.count(),'recent_orders': recent_orders}
+    return render(request, 'accounts/custdashboard.html', context)
 
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)

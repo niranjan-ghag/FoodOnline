@@ -57,7 +57,7 @@ def place_order(request):
             order.save()
 
             # RAZORPAY Payment
-            DATA = {"amount": float(order.total)*100,
+            DATA = {"amount": round(float(order.total)*100, 2),
                     "currency": "INR",
                     "receipt": f"receipt#{order.order_number}",
                     "notes": {
