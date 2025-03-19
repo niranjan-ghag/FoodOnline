@@ -2,8 +2,9 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 
-from marketplace.models import Cart
-from foodOnline.context_processors import get_cart_amount
+from marketplace.models import Cart, Tax
+from foodOnline.context_processors import get_cart_amount, get_cart_counter
+from menu.models import FoodItem
 from orders.forms import OrderForm
 from orders.models import Order, OrderedFood, Payment
 from orders.utils import generate_order_number
@@ -23,11 +24,43 @@ client = razorpay.Client(auth=(RZP_KEY_ID , RZP_KEY_SECRET))
 def place_order(request):
     cart_items =Cart.objects.filter(user=request.user).order_by('created_at')
     cart_count = cart_items.count()
-
+    vendors_ids = []
+    for i in cart_items:
+        if i.food_item.vendor.id not in vendors_ids:
+            vendors_ids.append(i.food_item.vendor.id)
     if cart_count <=0:
         return redirect('marketplace')
     
-    subtotal = get_cart_amount(request)['subtotal']
+    vendor_ids = []
+    for i in cart_items:
+        if i.food_item.vendor.id not in vendor_ids:
+            vendor_ids.append(i.food_item.vendor.id)
+    
+    get_tax = Tax.objects.filter(is_active=True)
+    subtotal = 0
+    total_data = {}
+    k ={}
+    for i in cart_items:
+        fooditem = FoodItem.objects.get(pk=i.food_item.id, vendor_id__in=vendor_ids)
+        v_id = fooditem.vendor.id
+        if v_id in k:
+            subtotal = k[v_id]
+            subtotal += (fooditem.price * i.quantity)
+        else:
+            subtotal =  (fooditem.price * i.quantity)
+            k[v_id] = subtotal
+
+        tax_dict ={}
+        for i in get_tax:
+            tax_type = i.tax_type
+            tax_percentage = i.tax_percentage
+            tax_amount = round( (subtotal* tax_percentage)/100, 2 )
+            tax_dict.update({tax_type: {str(tax_percentage) : str(tax_amount)}}) 
+        # Construct total data
+        total_data.update({fooditem.vendor.id: {str(subtotal): str(tax_dict)}})
+
+
+    # subtotal = get_cart_amount(request)['subtotal']
     total_tax = get_cart_amount(request)['tax']
     grand_total = get_cart_amount(request)['grand_total']
     tax_data = get_cart_amount(request)['tax_dict']
@@ -49,11 +82,13 @@ def place_order(request):
             order.user = request.user
             order.total = grand_total
             order.tax_data = json.dumps(tax_data)
+            order.total_data = json.dumps(total_data)
             
             order.total_tax = total_tax
             order.payment_method = request.POST['payment_method'] #input type name
             order.save()
             order.order_number = generate_order_number(order.id)
+            order.vendors.add(*vendors_ids)
             order.save()
 
             # RAZORPAY Payment
@@ -87,7 +122,6 @@ def place_order(request):
 def payments(request):
     # Check if request is ajax or not
     if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == 'POST':
-        print("In")
         # Store Payment Details in the Payment model
         order_number = request.POST.get('order_number')
         transaction_id = request.POST.get('transaction_id')
@@ -146,7 +180,7 @@ def payments(request):
         
         send_notification(mail_subject, mail_template, context)
         #  Clear Cart if Payment Is Success
-        # cart_items.delete()
+        cart_items.delete()
         # Return back to Ajax with status SUCCESS OR FAILURE
         response = {'order_number': order_number, 'transaction_id': transaction_id}
         return JsonResponse(response)

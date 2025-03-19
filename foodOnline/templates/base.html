@@ -67,7 +67,18 @@
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script src="{% static 'js/custom.js' %}"></script>
 	
-	
+	<!-- include datatables plugin script and css -->
+	<!-- <link rel="stylesheet" href="//cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
+	<script src="//cdn.datatables.net/2.2.2/js/dataTables.min.js"></script> -->
+	<link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
+	<script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+
+	<script>
+		
+		$(document).ready(function(){
+			$('#myOrdersTable').DataTable();
+		});
+	</script>
 
 	</head>
 

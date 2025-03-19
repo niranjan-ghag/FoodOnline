@@ -16,45 +16,13 @@
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="user-dashboard loader-holder">
                         <div class="user-holder">
-                            <h5 class="text-uppercase">OverView</h5>
-                            <div class="row">
-                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            Total Orders
-                                        </div>
-                                        <div class="card-body text-center">
-                                            <a href="#"><h5 class="card-title">{{orders_count}}</h5> </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            Total Revenue
-                                        </div>
-                                        <div class="card-body text-center">
-                                            <a href="#"><h5 class="card-title">₹ {{total_revenue | floatformat:2 }}</h5> </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            This Month Revenue
-                                        </div>
-                                        <div class="card-body text-center">
-                                            <a href="#"><h5 class="card-title">₹ {{current_month_revenue | floatformat:2}}</h5> </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> <br><br>
-                            <h5 class="text-uppercase">Recent Orders</h5>
+                            
+                            <h5 class="text-uppercase">My Orders</h5>
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <div class="user-orders-list">
                                         <div class="responsive-table">
-                                            <table class="table table-hover" style="font-size: 15px;">
+                                            <table class="table table-hover" style="font-size: 15px;" id="myOrdersTable">
                                                 <thead>
                                                   <tr>
                                                     <th scope="col">Order #</th>
@@ -63,11 +31,11 @@
                                                     <th scope="col">Total</th>
                                                     <th scope="col">Status</th>
                                                     <th scope="col">Date</th>
-                                                    <th scope="col">Action</th>
+                                                    <!-- <th scope="col">Action</th> -->
                                                   </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {% for order in recent_orders %}
+                                                    {% for order in orders %}
                                                   <tr>
                                                     <th>{{order.order_number }}</th>
                                                     <td>{{order.name }}</td>
@@ -75,17 +43,20 @@
                                                     <td>₹ {{order.get_total_by_vendor.grand_total }}</td>
                                                     <td>{{order.status }}</td>
                                                     <td>{{order.created_at }}</td>
-                                                    <td><a href="{% url 'vendor_order_details' order.order_number %}" class="btn btn-danger">Details</a></td>
+                                                    <!-- <td><a href="{% url 'order_details' order.order_number %}" class="btn btn-danger">Details</a></td> -->
 
                                                   </tr>
                                                   {% endfor %}
 
                                                 </tbody>
-                                            </table>
+                                              </table>
+                                            
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -94,5 +65,6 @@
     </div>
 </div>
 <!-- Main Section End -->
+
 
 {% endblock %}

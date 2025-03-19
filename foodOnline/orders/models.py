@@ -2,8 +2,12 @@ from django.db import models
 
 from accounts.models import User
 from menu.models import FoodItem
-
+from vendor.models import Vendor
+import simplejson as json
 # Create your models here.
+
+request_object = ''
+
 class Payment(models.Model):
     PAYMENT_METHOD = (
         ('PayPal','PayPal'),
@@ -42,13 +46,16 @@ class Order(models.Model):
     city = models.CharField(max_length=20)
     pincode = models.CharField(max_length=10)
     total = models.FloatField()
-    tax_data = models.JSONField(blank=True, help_text="Data format: {'tax_type: {'tax_percentage':'tax_amount'}}")
+    tax_data = models.JSONField(blank=True, help_text="Data format: {'tax_type: {'tax_percentage':'tax_amount'}}", null=True)
     total_tax = models.FloatField(default=0.0)
     payment_method = models.CharField(max_length=25)
     status = models.CharField(max_length=15, choices=STATUS, default='New')
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+
+    vendors=models.ManyToManyField(Vendor, blank=True)
+    total_data = models.JSONField(blank=True, null=True)
 
     # Concatenate First & last Name
     @property
@@ -57,6 +64,30 @@ class Order(models.Model):
     
     def __str__(self):
         return self.order_number
+    
+    def get_total_by_vendor(self):
+        vendor = Vendor.objects.get(user=request_object.user)
+        subtotal = 0
+        tax = 0
+        tax_dict = {}
+        if self.total_data:
+            total_data = json.loads(self.total_data)
+            data = total_data[str(vendor.id)]
+
+            
+            for key, val in data.items():
+                subtotal += float(key)
+                val = val.replace("'",'"')
+                val = json.loads(val)
+                tax_dict.update(val)
+                for i in val:
+                    for j in val[i]:
+                        tax+= float(val[i][j])
+        
+        grand_total = float(subtotal) + float(tax)
+
+        context = {'grand_total': grand_total, 'subtotal': subtotal, 'tax_dict': tax_dict}
+        return context
     
 
 class OrderedFood(models.Model):
@@ -72,3 +103,4 @@ class OrderedFood(models.Model):
 
     def __str__(self):
         return self.fooditem.food_title
+    

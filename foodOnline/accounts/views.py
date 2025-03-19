@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from accounts.forms import UserForm
@@ -161,7 +162,22 @@ def custdashboard(request):
 @user_passes_test(check_role_vendor)
 def vendordashboard(request):
     vendor = Vendor.objects.get(user=request.user)
-    context = {'vendor': vendor,}
+    orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered = True).order_by('-created_at')
+    recent_orders = orders[:10]
+
+    # Current month's Revenue
+    current_month = datetime.now().month
+    current_month_orders = orders.filter(vendors__in=[vendor.id], created_at__month = current_month)
+    current_month_revenue = 0
+    for i in current_month_orders:
+        current_month_revenue += i.get_total_by_vendor()['grand_total']
+
+    #  total revenue
+    total_revenue = 0
+    for i in orders:
+        total_revenue += i.get_total_by_vendor()['grand_total']
+
+    context = {'vendor': vendor, 'orders':orders, 'orders_count': orders.count(),'recent_orders':recent_orders,'total_revenue':total_revenue,'current_month_revenue': current_month_revenue}
     return render(request, 'accounts/vendordashboard.html', context)
 
 
