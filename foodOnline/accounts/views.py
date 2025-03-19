@@ -114,7 +114,7 @@ def registerVendor(request):
         'user_form':user_form,
         'vendor_form' : vendor_form,
     }
-    print("-----context-----",context)
+    
     return render(request, 'accounts/registerVendor.html',context)
 
 
